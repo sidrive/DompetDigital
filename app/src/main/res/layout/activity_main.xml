@@ -37,7 +37,7 @@
         android:id="@+id/btnPemasukan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PEMASUKAN"
+        android:text="INPUT"
         app:layout_constraintBottom_toBottomOf="@+id/txtSaldo"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -47,10 +47,10 @@
         android:layout_marginTop="200dp" />
 
     <Button
-        android:id="@+id/btnPengeluaran"
+        android:id="@+id/btnDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PENGELUARAN"
+        android:text="Detail Dompet"
         app:layout_constraintBottom_toBottomOf="@+id/btnPemasukan"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"

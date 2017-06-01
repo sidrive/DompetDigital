@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnPengeluaran = (Button) findViewById(R.id.btnPengeluaran);
+        btnPengeluaran = (Button) findViewById(R.id.btnDetail);
         btnPengeluaran.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Dompet Digital</string>
+
+    <string-array name="spinner_array">
+        <item>Pilih Mode</item>
+        <item>Pemasukan </item>
+        <item>Pengeluaran </item>
+    </string-array>
+
 </resources>

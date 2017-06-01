@@ -20,14 +20,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v4.view.MenuItemCompat;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.nurmuhammadsexample.itserver.dompetdigital.App.AppController;
+import com.nurmuhammadsexample.itserver.dompetdigital.Helper.Helper;
 import com.nurmuhammadsexample.itserver.dompetdigital.R;
 import com.nurmuhammadsexample.itserver.dompetdigital.Server.Server;
 
@@ -41,9 +49,11 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
 
     private EditText txtnama, txtjumlah;
     private Button btnSimpan;
+    private Spinner spNamen;
+    private Button btnKembali;
 
-
-    ProgressDialog pd;
+    private ProgressDialog progressDialog;
+    private static final String URL_REGISTER_DEVICE = "http://nurmuha.hostzi.com/dompet/simpanpemasukan.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,91 +63,87 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
         btnSimpan = (Button) findViewById(R.id.btnSimpan);
         btnSimpan.setOnClickListener(this);
 
+        btnKembali = (Button) findViewById(R.id.btnKembali);
+        btnKembali.setOnClickListener(this);
+
+        spNamen = (Spinner) findViewById(R.id.sp_name);
+
         txtnama = (EditText) findViewById(R.id.txtnama);
         txtjumlah = (EditText) findViewById(R.id.txtjumlah);
 
-        pd = new ProgressDialog(this);
     }
+
+
 
     @Override
     public void onClick(View v) {
         if(v == btnSimpan){
-            simpanPemasukan();
+            sendPemasukan();
+        }
+        if(v == btnKembali){
+            Intent intent = new Intent(PemasukanActivity.this, MainActivity.class);
+            startActivity(intent);
         }
     }
 
-    public void simpanPemasukan(){
-        final String namapemasukan = txtnama.getText().toString().trim();
-        final String jumlah = txtjumlah.getText().toString().trim();
-        if (!namapemasukan.isEmpty() && !jumlah.isEmpty()) {
-            simpanData(namapemasukan, jumlah);
-        } else if (namapemasukan.isEmpty()) {
+    //storing token to mysql server
+    private void sendPemasukan() {
+        txtnama.setError(null);
+        txtjumlah.setError(null);
+        /*check keberadaan teks*/
+        if (Helper.isEmpty(txtnama)) {
             txtnama.setError("Harap Isikan Keterangan");
             txtnama.requestFocus();
-        } else if (jumlah.isEmpty()) {
+        } else if (Helper.isEmpty(txtjumlah)) {
             txtjumlah.setError("Jumlah Pemasukan tidak boleh kosong");
             txtjumlah.requestFocus();
-        }
-    }
+        } else {
 
-    private void simpanData(final String namapemasukan, final String jumlah) {
-        String url_simpan = Server.URL+"simpanpemasukan.php";
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Proses simpan pemasukan...");
+            progressDialog.show();
 
-        String tag_json = "tag_json";
+            final String nama = txtnama.getText().toString();
+            final String jumlah = txtjumlah.getText().toString();
+            final String mode   = spNamen.getSelectedItem().toString();
 
-        pd.setCancelable(false);
-        pd.setMessage("Menyimpan...");
-        showDialog();
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGISTER_DEVICE,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            progressDialog.dismiss();
+                            try {
+                                JSONObject obj = new JSONObject(response);
+                                Toast.makeText(PemasukanActivity.this, obj.getString("message"), Toast.LENGTH_LONG).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progressDialog.dismiss();
+                            Toast.makeText(PemasukanActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_simpan, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("response", response.toString());
-                hideDialog();
-
-                try {
-                    JSONObject jObject = new JSONObject(response);
-                    String pesan = jObject.getString("pesan");
-                    String hasil = jObject.getString("result");
-                    if (hasil.equalsIgnoreCase("true")) {
-                        Toast.makeText(PemasukanActivity.this, pesan, Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), PemasukanActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(PemasukanActivity.this, pesan, Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(PemasukanActivity.this, "Error JSON", Toast.LENGTH_SHORT).show();
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("nama", nama);
+                    params.put("jumlah", jumlah);
+                    params.put("mode", mode);
+                    return params;
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("ERROR", error.getMessage());
-                Toast.makeText(PemasukanActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                hideDialog();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> param = new HashMap<String, String>();
-                param.put("nama_pemasukan", namapemasukan);
-                param.put("harga", jumlah);
-                return param;
-            }
-        };
+            };
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(stringRequest);
 
-        AppController.getInstance().addToRequestQueue(stringRequest, tag_json);
+        }
+        Intent intent = new Intent(PemasukanActivity.this, PemasukanActivity.class);
+        startActivity(intent);
     }
 
-    private void showDialog() {
-        if (!pd.isShowing())
-            pd.show();
-    }
 
-    private void hideDialog() {
-        if (pd.isShowing())
-            pd.dismiss();
-    }
 }

@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nurmuhammadsexample.itserver.dompetdigital.Activity.PemasukanActivity">
-
-
-    <include layout="@layout/content_pemasukan" />
+    tools:context="com.nurmuhammadsexample.itserver.dompetdigital.Activity.PengeluaranActivity">
 
 </android.support.constraint.ConstraintLayout>

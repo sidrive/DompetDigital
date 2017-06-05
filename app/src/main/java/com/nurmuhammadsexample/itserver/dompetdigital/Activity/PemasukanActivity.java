@@ -103,7 +103,7 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
             progressDialog.setMessage("Proses simpan pemasukan...");
             progressDialog.show();
 
-            final String nama = txtnama.getText().toString();
+            final String keterangan = txtnama.getText().toString();
             final String jumlah = txtjumlah.getText().toString();
             final String mode   = spNamen.getSelectedItem().toString();
 
@@ -131,7 +131,7 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("nama", nama);
+                    params.put("keterangan", keterangan);
                     params.put("jumlah", jumlah);
                     params.put("mode", mode);
                     return params;
@@ -140,9 +140,11 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             requestQueue.add(stringRequest);
 
+            Intent intent = new Intent(PemasukanActivity.this, PemasukanActivity.class);
+            startActivity(intent);
+
         }
-       /* Intent intent = new Intent(PemasukanActivity.this, PemasukanActivity.class);
-        startActivity(intent);*/
+       /* */
     }
 
 

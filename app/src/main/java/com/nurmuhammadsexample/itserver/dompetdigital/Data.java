@@ -30,7 +30,7 @@ public class Data {
 
         }
 
-        public String getId() {
+       /* public String getId() {
             return id;
         }
 
@@ -38,7 +38,7 @@ public class Data {
             this.id = id;
         }
 
-        public String getNama() {
+       */ public String getNama() {
             return nama;
         }
 

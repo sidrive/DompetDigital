@@ -38,16 +38,16 @@ import java.util.Map;
 
 import com.nurmuhammadsexample.itserver.dompetdigital.R;
 
-public class PengeluaranActivity extends AppCompatActivity {
+public class PengeluaranActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     ListView list;
-    //SwipeRefreshLayout swipe;
+    SwipeRefreshLayout swipe;
     List<Data> itemList = new ArrayList<Data>();
     AdapterDetail adapter;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static String url_selectpo     = Server.URL + "selectDetail.php";
+    private static String url_selectpo     = "http://nurmuha.hostzi.com/dompet/selectDetail.php";
 
     public static final String TAG_IDPEMASUKAN       = "id_pemasukan";
     public static final String TAG_PEMASUKAN     = "pemasukan";
@@ -62,7 +62,7 @@ public class PengeluaranActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pengeluaran);
 
         // menghubungkan variablel pada layout dan pada java
-        //swipe   = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipe   = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         list    = (ListView) findViewById(R.id.list);
 
         // untuk mengisi data dari JSON ke dalam adapter
@@ -70,7 +70,7 @@ public class PengeluaranActivity extends AppCompatActivity {
         list.setAdapter(adapter);
 
         // menamilkan widget refresh
-        /*swipe.setOnRefreshListener(this);
+        swipe.setOnRefreshListener(this);
         swipe.post(new Runnable() {
                        @Override
                        public void run() {
@@ -80,23 +80,23 @@ public class PengeluaranActivity extends AppCompatActivity {
                            callVolley();
                        }
                    }
-        );*/
+        );
 
-        callVolley();
+
     }
 
-   /* @Override
+   @Override
     public void onRefresh() {
         itemList.clear();
         adapter.notifyDataSetChanged();
         callVolley();
-    }*/
+    }
 
     // untuk menampilkan semua data pada listview
     private void callVolley(){
         itemList.clear();
         adapter.notifyDataSetChanged();
-        //swipe.setRefreshing(true);
+        swipe.setRefreshing(true);
 
         // membuat request JSON
         JsonArrayRequest jArr = new JsonArrayRequest(url_selectpo, new Response.Listener<JSONArray>() {
@@ -128,14 +128,14 @@ public class PengeluaranActivity extends AppCompatActivity {
                 // notifikasi adanya perubahan data pada adapter
                 adapter.notifyDataSetChanged();
 
-                //swipe.setRefreshing(false);
+                swipe.setRefreshing(false);
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-               // swipe.setRefreshing(false);
+               swipe.setRefreshing(false);
             }
         });
 

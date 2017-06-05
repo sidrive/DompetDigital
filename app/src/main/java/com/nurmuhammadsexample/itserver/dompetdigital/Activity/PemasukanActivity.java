@@ -141,8 +141,8 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
             requestQueue.add(stringRequest);
 
         }
-        Intent intent = new Intent(PemasukanActivity.this, PemasukanActivity.class);
-        startActivity(intent);
+       /* Intent intent = new Intent(PemasukanActivity.this, PemasukanActivity.class);
+        startActivity(intent);*/
     }
 
 

@@ -115,6 +115,8 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
                             try {
                                 JSONObject obj = new JSONObject(response);
                                 Toast.makeText(PemasukanActivity.this, obj.getString("message"), Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(PemasukanActivity.this, PemasukanActivity.class);
+                                startActivity(intent);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -140,8 +142,7 @@ public class PemasukanActivity extends AppCompatActivity implements View.OnClick
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             requestQueue.add(stringRequest);
 
-            Intent intent = new Intent(PemasukanActivity.this, PemasukanActivity.class);
-            startActivity(intent);
+
 
         }
        /* */
